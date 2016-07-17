@@ -1,6 +1,6 @@
 {
   "name": "@exoplay/exobot-adapter-slack",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "exobot adapter for slack",
   "main": "slack.js",
   "scripts": {
