@@ -1,0 +1,34 @@
+{
+  "name": "exobot-adapter-slack",
+  "version": "0.0.1",
+  "description": "exobot adapter for slack",
+  "main": "index.js",
+  "scripts": {
+    "test": "blueprints -t",
+    "build": "blueprints -p",
+    "watch": "blueprints -p -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/exoplay/exobot-adapter-slack.git"
+  },
+  "keywords": [
+    "exobot",
+    "chat",
+    "bot",
+    "slack"
+  ],
+  "author": "Jack Lawson <ajacksified@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/exoplay/exobot-adapter-slack/issues"
+  },
+  "homepage": "https://github.com/exoplay/exobot-adapter-slack#readme",
+  "dependencies": {
+    "@r/build": "git://github.com/ajacksified/node-build#679c3f3d47c0916237d55128ece4cc817b489ef8",
+    "@slack/client": "^3.5.1"
+  },
+  "peerDependencies": {
+    "@exoplay/exobot": "~1.0.0"
+  }
+}
