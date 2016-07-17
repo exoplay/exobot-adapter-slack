@@ -26,4 +26,4 @@ Visit https://api.slack.com/bot-users to set up a bot user.
 
 ## License
 
-MIT licensed. Copyright 2016 Exoplay, LLC. See LICENSE file for more details.
+LGPL licensed. Copyright 2016 Exoplay, LLC. See LICENSE file for more details.
