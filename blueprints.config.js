@@ -11,7 +11,7 @@ module.exports = [{
     },
     externals: {
       generator: 'node-modules',
-      additional: ['@slack/client'],
+      additional: ['@slack/client', '@exoplay/exobot'],
     },
     resolve: {
       generator: 'npm-and-modules',
