@@ -1,6 +1,6 @@
 {
   "name": "@exoplay/exobot-adapter-slack",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "description": "exobot adapter for slack",
   "main": "slack.js",
   "scripts": {
@@ -29,6 +29,6 @@
     "@slack/client": "^3.5.1"
   },
   "peerDependencies": {
-    "@exoplay/exobot": "1.x"
+    "@exoplay/exobot": "2.x"
   }
 }

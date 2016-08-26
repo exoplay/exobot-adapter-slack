@@ -22,6 +22,8 @@ export const EVENTS = {
 };
 
 export class SlackAdapter extends Adapter {
+  name = 'Slack';
+
   constructor ({ token }) {
     super(...arguments);
     this.token = token;
@@ -98,5 +100,9 @@ export class SlackAdapter extends Adapter {
     }
 
     this.receive({ user, text: message.text, channel: message.channel });
+  }
+
+  getUserIdByUserName (name) {
+    return this.client.dataStore.getUserByName(name).id;
   }
 }
