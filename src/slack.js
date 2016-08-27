@@ -37,7 +37,7 @@ export class SlackAdapter extends Adapter {
 
     Object.keys(EVENTS).forEach(slackEvent => {
       const mappedFn = this[EVENTS[slackEvent]];
-      this.client.on(slackEvent, (...args) => mappedFn(...args));
+      this.client.on(slackEvent, mappedFn.bind(this));
       this.client.on(slackEvent, (...args) => {
         bot.emitter.emit(`slack-${slackEvent}`, ...args);
       });
@@ -51,36 +51,36 @@ export class SlackAdapter extends Adapter {
     this.client.sendMessage(message.text, message.channel);
   }
 
-  slackConnecting = () => {
+  slackConnecting () {
     this.bot.log.info('Connecting to Slack.');
     this.status = Adapter.STATUS.CONNECTING;
   }
 
-  slackConnected = () => {
+  slackConnected () {
     this.bot.log.info('Connected to Slack.');
   }
 
-  slackAuthenticated = () => {
+  slackAuthenticated () {
     this.bot.log.notice('Successfully authenticated to Slack.');
     this.status = Adapter.STATUS.CONNECTED;
   }
 
-  slackDisconnected = () => {
+  slackDisconnected () {
     this.bot.log.critical('Disconnected from Slack.');
     this.status = Adapter.STATUS.DISCONNECTED;
   }
 
-  slackUnableToStart = () => {
+  slackUnableToStart () {
     this.bot.log.critical('Unable to start Slack.');
     this.status = Adapter.STATUS.DISCONNECTED;
   }
 
-  slackReconnecting = () => {
+  slackReconnecting () {
     this.bot.log.notice('Reconnecting to Slack.');
     this.status = Adapter.STATUS.RECONNECTING;
   }
 
-  slackMessage = (message) => {
+  slackMessage (message) {
     const botId = this.client.activeUserId;
     if (message.user === botId) { return; }
 
@@ -96,13 +96,14 @@ export class SlackAdapter extends Adapter {
     const channel = this.client.dataStore.getChannelGroupOrDMById(message.channel);
 
     if (channel && channel._modelName === dmName) {
-      return this.receiveWhisper({ user, text: message.text, channel: message.channel });
+      return super.receiveWhisper({ user, text: message.text, channel: message.channel });
     }
 
-    this.receive({ user, text: message.text, channel: message.channel });
+    super.receive({ user, text: message.text, channel: message.channel });
   }
 
   getUserIdByUserName (name) {
-    return this.client.dataStore.getUserByName(name).id;
+    const user = this.client.dataStore.getUserByName(name);
+    return user.id;
   }
 }
