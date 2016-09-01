@@ -81,6 +81,8 @@ export class SlackAdapter extends Adapter {
   }
 
   slackMessage (message) {
+    if (!message.text) { return; }
+
     const botId = this.client.activeUserId;
     if (message.user === botId) { return; }
 
