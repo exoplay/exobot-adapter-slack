@@ -92,7 +92,8 @@ export class SlackAdapter extends Adapter {
     return [];
   }
 
-  getRoles(adapterUserId, adapterUser, roles) {
+  getRoles(adapterUserId, adapterUser) {
+    const roles = [];
     if (adapterUser) {
       if (adapterUser.is_admin) {
         roles.push('admin');
@@ -101,7 +102,7 @@ export class SlackAdapter extends Adapter {
       if (adapterUser.is_owner) {
         roles.push('owner');
       }
-      return true;
+      return roles;
     }
 
     return false;
@@ -113,7 +114,8 @@ export class SlackAdapter extends Adapter {
 
     const botId = this.client.activeUserId;
     if (message.user === botId) { return; }
-    console.log(message.text);
+
+    this.bot.log.debug(message.text);
     const slackUser = this.client.dataStore.getUserById(message.user);
 
     if (slackUser) {
@@ -134,16 +136,17 @@ export class SlackAdapter extends Adapter {
   async getUserIdByUserName (name) {
     const user = this.client.dataStore.getUserByName(name);
     if (user) {
-      let botuser;
+      let botUser;
       try {
-        botuser = await this.getUser(user.id, user.name, user);
+        botUser = await this.getUser(user.id, user.name, user);
       } catch (err) {
-        console.log(err);
+        this.bot.log.warn(err)
       }
-      return botuser.id;
+
+      return botUser.id;
     }
 
     return;
   }
-  
+
 }
