@@ -7,7 +7,7 @@ import {
 
 import models from '@slack/client/lib/models';
 
-import { Adapter, User } from '@exoplay/exobot';
+import { Adapter } from '@exoplay/exobot';
 
 const dmName = new models.DM()._modelName;
 
@@ -24,9 +24,10 @@ export const EVENTS = {
 export class SlackAdapter extends Adapter {
   name = 'Slack';
 
-  constructor ({ token }) {
+  constructor ({ token, adapterName}) {
     super(...arguments);
     this.token = token;
+    this.name = adapterName || this.name;
   }
 
   register (bot) {
@@ -80,19 +81,46 @@ export class SlackAdapter extends Adapter {
     this.status = Adapter.STATUS.RECONNECTING;
   }
 
-  slackMessage (message) {
+  getRolesForUser (userId) {
+    if (this.adapterUsers && this.roleMapping && this.adapterUsers[userId]) {
+      return this.adapterUsers[userId].roles
+        .filter(role => this.roleMapping[role])
+        .map(role => this.roleMapping[role]);
+    }
+
+    return [];
+  }
+
+  getRoles(adapterUserId, adapterUser) {
+    const roles = [];
+    if (adapterUser) {
+      if (adapterUser.is_admin) {
+        roles.push('admin');
+      }
+
+      if (adapterUser.is_owner) {
+        roles.push('owner');
+      }
+      return roles;
+    }
+
+    return false;
+  }
+
+  async slackMessage (message) {
+    let user;
     if (!message.text) { return; }
 
     const botId = this.client.activeUserId;
     if (message.user === botId) { return; }
 
+    this.bot.log.debug(message.text);
     const slackUser = this.client.dataStore.getUserById(message.user);
-    let user;
 
     if (slackUser) {
-      user = new User(slackUser.name, slackUser.id);
+      user = await this.getUser(slackUser.id, slackUser.name, slackUser);
     } else {
-      user = new User(message.user);
+      user = await this.getUser(message.user, undefined, slackUser);
     }
 
     const channel = this.client.dataStore.getChannelGroupOrDMById(message.channel);
@@ -104,8 +132,20 @@ export class SlackAdapter extends Adapter {
     super.receive({ user, text: message.text, channel: message.channel });
   }
 
-  getUserIdByUserName (name) {
+  async getUserIdByUserName (name) {
     const user = this.client.dataStore.getUserByName(name);
-    return user.id;
+    if (user) {
+      let botUser;
+      try {
+        botUser = await this.getUser(user.id, user.name, user);
+      } catch (err) {
+        this.bot.log.warn(err)
+      }
+
+      return botUser.id;
+    }
+
+    return;
   }
+
 }
