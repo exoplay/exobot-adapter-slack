@@ -82,11 +82,10 @@ export class SlackAdapter extends Adapter {
   }
 
   getRolesForUser (userId) {
-    if (this.adapterUsers[userId]) {
-      return this.adapterUsers[userId].roles.map((role) => {
-        if (this.roleMapping[role]) {
-          return this.roleMapping[role];
-        }});
+    if (this.adapterUsers && this.roleMapping && this.adapterUsers[userId]) {
+      return this.adapterUsers[userId].roles
+        .filter(role => this.roleMapping[role])
+        .map(role => this.roleMapping[role]);
     }
 
     return [];
