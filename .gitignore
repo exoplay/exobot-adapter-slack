@@ -6,4 +6,4 @@ start.sh
 bin/*
 build/
 example/
-slack.js*
+/slack.js*
