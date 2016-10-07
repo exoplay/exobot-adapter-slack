@@ -7,7 +7,7 @@ import {
 
 import models from '@slack/client/lib/models';
 
-import { Adapter } from '@exoplay/exobot';
+import { Adapter, AdapterOperationTypes as AT } from '@exoplay/exobot';
 
 const dmName = new models.DM()._modelName;
 
@@ -44,6 +44,7 @@ export default class SlackAdapter extends Adapter {
       });
     });
 
+    this.configureAdapterOperations();
     this.client.start();
   }
 
@@ -151,4 +152,19 @@ export default class SlackAdapter extends Adapter {
 
     return;
   }
+
+  configureAdapterOperations() {
+    this.bot.emitter.on(AT.WHISPER_USER, this.whisperUser, this);
+  }
+
+  whisperUser(adapterName, options) {
+  if (!adapterName || adapterName === this.name) {
+    const adapterUserId = this.getAdapterUserIdById(options.userId);
+    if (adapterUserId) {
+      const user = this.client.dataStore.getUserById(adapterUserId);
+      const channel = this.client.dataStore.getDMByName(user.name);
+      this.client.sendMessage(options.messageText, channel.id);
+    }
+  }
+  
 }
