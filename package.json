@@ -1,11 +1,11 @@
 {
   "name": "@exoplay/exobot-adapter-slack",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "exobot adapter for slack",
   "main": "slack.js",
   "scripts": {
-    "build": "exobot build",
-    "watch": "exobot build --watch"
+    "build": "exobot build -i src/slack.js -o slack.js",
+    "watch": "exobot build -i src/slack.js -o slack.js --watch"
   },
   "repository": {
     "type": "git",
