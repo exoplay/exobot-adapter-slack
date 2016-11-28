@@ -48,8 +48,10 @@ export class SlackAdapter extends Adapter {
   }
 
   send (message) {
-    this.bot.log.debug(`Sending ${message.text} to ${message.channel}`);
-    this.client.sendMessage(message.text, message.channel);
+    if (message.text) {
+      this.bot.log.debug(`Sending ${message.text} to ${message.channel}`);
+      this.client.sendMessage(message.text, message.channel);
+    }
   }
 
   slackConnecting () {
@@ -125,11 +127,13 @@ export class SlackAdapter extends Adapter {
 
     const channel = this.client.dataStore.getChannelGroupOrDMById(message.channel);
 
-    if (channel && channel._modelName === dmName) {
-      return super.receiveWhisper({ user, text: message.text, channel: message.channel });
-    }
+    if (message.text) {
+      if (channel && channel._modelName === dmName) {
+        return super.receiveWhisper({ user, text: message.text, channel: message.channel });
+      }
 
-    super.receive({ user, text: message.text, channel: message.channel });
+      super.receive({ user, text: message.text, channel: message.channel });
+    }
   }
 
   async getUserIdByUserName (name) {
@@ -147,5 +151,4 @@ export class SlackAdapter extends Adapter {
 
     return;
   }
-
 }

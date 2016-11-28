@@ -1,11 +1,11 @@
 {
   "name": "@exoplay/exobot-adapter-slack",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "exobot adapter for slack",
   "main": "slack.js",
   "scripts": {
-    "build": "exobot-build",
-    "watch": "exobot-build --watch"
+    "build": "exobot build",
+    "watch": "exobot build --watch"
   },
   "repository": {
     "type": "git",
@@ -24,16 +24,13 @@
   },
   "homepage": "https://github.com/exoplay/exobot-adapter-slack#readme",
   "dependencies": {
-    "@r/build": "git://github.com/ajacksified/node-build#679c3f3d47c0916237d55128ece4cc817b489ef8",  
     "@slack/client": "^3.5.1"
   },
   "peerDependencies": {
     "@exoplay/exobot": "3.x"
   },
   "devDependencies": {
-    "babel-plugin-syntax-decorators": "^6.8.0",
-    "babel-plugin-transform-decorators": "^6.8.0",
-    "babel-plugin-transform-decorators-legacy": "^1.3.4",
-    "@exoplay/exobot": "3.x"
+    "@exoplay/exobot": "3.x",
+    "@exoplay/exobot-build": "0.0.6"
   }
 }
