@@ -21,8 +21,8 @@ export const EVENTS = {
   [RTM_EVENTS.MESSAGE]: 'slackMessage',
 };
 
-export class SlackAdapter extends Adapter {
-  name = 'Slack';
+export default class SlackAdapter extends Adapter {
+  static type = 'slack';
 
   constructor ({ token, adapterName}) {
     super(...arguments);
