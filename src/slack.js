@@ -7,7 +7,7 @@ import {
 
 import models from '@slack/client/lib/models';
 
-import { Adapter, AdapterOperationTypes as AT } from '@exoplay/exobot';
+import { Adapter, AdapterOperationTypes as AT, PropTypes as T } from '@exoplay/exobot';
 
 const dmName = new models.DM()._modelName;
 
@@ -23,24 +23,23 @@ export const EVENTS = {
 
 export default class SlackAdapter extends Adapter {
   static type = 'slack';
+  static propTypes = {
+    token: T.string.isRequired,
+    roleMapping: T.object,
+    name: T.string,
+  };
 
-  constructor ({ token, adapterName}) {
+  constructor() {
     super(...arguments);
-    this.token = token;
-    this.name = adapterName || this.name;
-  }
+    const { token } = this.options;
 
-  register (bot) {
-    super.register(...arguments);
-    const { token } = this;
-
-    this.client = new RtmClient(token, { logLevel: bot.logLevel });
+    this.client = new RtmClient(token, { logLevel: this.bot.logLevel });
 
     Object.keys(EVENTS).forEach(slackEvent => {
       const mappedFn = this[EVENTS[slackEvent]];
       this.client.on(slackEvent, mappedFn.bind(this));
       this.client.on(slackEvent, (...args) => {
-        bot.emitter.emit(`slack-${slackEvent}`, ...args);
+        this.bot.emitter.emit(`slack-${slackEvent}`, ...args);
       });
     });
 
@@ -48,43 +47,43 @@ export default class SlackAdapter extends Adapter {
     this.client.start();
   }
 
-  send (message) {
+  send(message) {
     if (message.text) {
       this.bot.log.debug(`Sending ${message.text} to ${message.channel}`);
       this.client.sendMessage(message.text, message.channel);
     }
   }
 
-  slackConnecting () {
+  slackConnecting() {
     this.bot.log.info('Connecting to Slack.');
     this.status = Adapter.STATUS.CONNECTING;
   }
 
-  slackConnected () {
+  slackConnected() {
     this.bot.log.info('Connected to Slack.');
   }
 
-  slackAuthenticated () {
+  slackAuthenticated() {
     this.bot.log.notice('Successfully authenticated to Slack.');
     this.status = Adapter.STATUS.CONNECTED;
   }
 
-  slackDisconnected () {
+  slackDisconnected() {
     this.bot.log.critical('Disconnected from Slack.');
     this.status = Adapter.STATUS.DISCONNECTED;
   }
 
-  slackUnableToStart () {
+  slackUnableToStart() {
     this.bot.log.critical('Unable to start Slack.');
     this.status = Adapter.STATUS.DISCONNECTED;
   }
 
-  slackReconnecting () {
+  slackReconnecting() {
     this.bot.log.notice('Reconnecting to Slack.');
     this.status = Adapter.STATUS.RECONNECTING;
   }
 
-  getRolesForUser (userId) {
+  getRolesForUser(userId) {
     if (this.adapterUsers && this.roleMapping && this.adapterUsers[userId]) {
       return this.adapterUsers[userId].roles
         .filter(role => this.roleMapping[role])
@@ -110,7 +109,7 @@ export default class SlackAdapter extends Adapter {
     return false;
   }
 
-  async slackMessage (message) {
+  async slackMessage(message) {
     let user;
     if (!message.text) { return; }
 
@@ -137,7 +136,7 @@ export default class SlackAdapter extends Adapter {
     }
   }
 
-  async getUserIdByUserName (name) {
+  async getUserIdByUserName(name) {
     const user = this.client.dataStore.getUserByName(name);
     if (user) {
       let botUser;
@@ -166,5 +165,5 @@ export default class SlackAdapter extends Adapter {
       this.client.sendMessage(options.messageText, channel.id);
     }
   }
-  
+
 }
