@@ -5,7 +5,9 @@
   "main": "slack.js",
   "scripts": {
     "build": "exobot build -i src/slack.js -o slack.js",
-    "watch": "exobot build -i src/slack.js -o slack.js --watch"
+    "watch": "exobot build -i src/slack.js -o slack.js --watch",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix"
   },
   "repository": {
     "type": "git",
@@ -24,13 +26,20 @@
   },
   "homepage": "https://github.com/exoplay/exobot-adapter-slack#readme",
   "dependencies": {
-    "@slack/client": "^3.5.1"
-  },
-  "peerDependencies": {
-    "@exoplay/exobot": "3.x"
+    "@slack/client": "^3.5.1",
+    "@exoplay/exobot": ">=4.1 <5"
   },
   "devDependencies": {
-    "@exoplay/exobot": "4.x",
-    "@exoplay/exobot-build": "~0.2.1"
+    "@exoplay/exobot": ">=4.1 <5",
+    "@exoplay/exobot-build": "~0.2.1",
+    "babel-eslint": "^7.1.1",
+    "eslint": "^3.12.2",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-import-resolver-node": "^0.3.0",
+    "eslint-plugin-babel": "^4.0.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.6.0",
+    "regenerator-runtime": "^0.9.6"
   }
 }

@@ -143,7 +143,7 @@ export default class SlackAdapter extends Adapter {
       try {
         botUser = await this.getUser(user.id, user.name, user);
       } catch (err) {
-        this.bot.log.warn(err)
+        this.bot.log.warning(err);
       }
 
       return botUser.id;
@@ -157,12 +157,13 @@ export default class SlackAdapter extends Adapter {
   }
 
   whisperUser(adapterName, options) {
-  if (!adapterName || adapterName === this.name) {
-    const adapterUserId = this.getAdapterUserIdById(options.userId);
-    if (adapterUserId) {
-      const user = this.client.dataStore.getUserById(adapterUserId);
-      const channel = this.client.dataStore.getDMByName(user.name);
-      this.client.sendMessage(options.messageText, channel.id);
+    if (!adapterName || adapterName === this.name) {
+      const adapterUserId = this.getAdapterUserIdById(options.userId);
+      if (adapterUserId) {
+        const user = this.client.dataStore.getUserById(adapterUserId);
+        const channel = this.client.dataStore.getDMByName(user.name);
+        this.client.sendMessage(options.messageText, channel.id);
+      }
     }
   }
 
